@@ -70,9 +70,9 @@ func topTen(iblData: Dictionary<String, AnyObject>) -> String {
     
     let allEpisodes : [Episode] = episodeDictArray!.map{ (value) -> Episode in
         let episodeDict = value as! NSDictionary
-        let episodeTitle = episodeDict.objectForKey("title") as! String?
-        let episodeSubtitle = episodeDict.objectForKey("subtitle") as! String?
-        let episodeImageUrl = (episodeDict.objectForKey("images") as! NSDictionary?)?.objectForKey("standard") as! String?
+        let episodeTitle = episodeDict.objectForKey(NSString(string: "title")) as! String?
+        let episodeSubtitle = episodeDict.objectForKey(NSString(string: "subtitle")) as! String?
+        let episodeImageUrl = (episodeDict.objectForKey(NSString(string: "images")) as! NSDictionary?)?.objectForKey("standard") as! String?
         let title = episodeTitle ?? ""
         let subtitle = episodeSubtitle ?? ""
         let imageUrl = (episodeImageUrl ?? "").stringByReplacingOccurrencesOfString("{recipe}", withString: "240x135")
