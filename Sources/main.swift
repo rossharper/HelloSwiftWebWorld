@@ -109,13 +109,16 @@ app.get("/") { request in
     var iblData : NSDictionary = NSDictionary()
     
     // Do nasty synchronous request because Vapor async handling is horrible
-    let semaphore: dispatch_semaphore_t = dispatch_semaphore_create(0)
+    //let semaphore: dispatch_semaphore_t = dispatch_semaphore_create(0)
+    var sem = true;
     let task = session.dataTaskWithRequest(urlRequest, completionHandler: { (data, response, error) in
         iblData = parseResponse(data, error: error)
-        dispatch_semaphore_signal(semaphore);
+        //dispatch_semaphore_signal(semaphore);
+        sem = false;
     })
     task.resume()
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+    //dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+    while(sem) {}
     
     return try View(path: "index.stencil", context: ["episodes": topTen(iblData)])
 }
