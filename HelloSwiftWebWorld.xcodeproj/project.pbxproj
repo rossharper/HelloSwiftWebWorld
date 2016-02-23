@@ -19,6 +19,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		91370E241C7CED1E00C19CD2 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
 		918303371C7B8BB100369331 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sources; sourceTree = "<group>"; };
 		918303381C7B8C1400369331 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		9183033D1C7B8CE300369331 /* HelloSwiftWebWorld */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HelloSwiftWebWorld; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -38,6 +39,7 @@
 		9183032F1C7B8B3F00369331 = {
 			isa = PBXGroup;
 			children = (
+				91370E241C7CED1E00C19CD2 /* Resources */,
 				918303381C7B8C1400369331 /* Package.swift */,
 				918303371C7B8BB100369331 /* Sources */,
 				9183033E1C7B8CE300369331 /* Products */,

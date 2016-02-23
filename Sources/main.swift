@@ -8,6 +8,7 @@
 
 import Foundation
 import Vapor
+import VaporStencil
 
 print("HelloSwiftWebWorld -- starting...")
 
@@ -22,9 +23,12 @@ for arg in Process.arguments {
     }
 }
 
-Route.get("/") { _ in
-    return "<h1>Hello Swift Web World</h1><p>Hello, I am a web server written in <a href=\"https://swift.org/\" target=\"_blank\">Swift</a>, running on a Linux virtual machine in the cloud.</p>"
+View.renderers[".stencil"] = StencilRenderer()
+
+let app = Application()
+
+app.get("/") { request in
+    return try View(path: "index.stencil")
 }
 
-let server = Server()
-server.run(port: port)
+app.start(port: port)
