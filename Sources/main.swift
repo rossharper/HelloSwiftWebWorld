@@ -61,7 +61,7 @@ func topTen(iblData: Dictionary<String, AnyObject>) -> String {
         return ""
     }
     
-    let episodeDictArray = ge!.objectForKey("elements") as! NSArray?
+    let episodeDictArray = ge!.objectForKey(NSString(string: "elements")) as! NSArray?
     
     if episodeDictArray == nil {
         print("no elements")
