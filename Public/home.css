@@ -8,3 +8,27 @@ h1 {
   font-size: 2em;
   font-weight: 100;
 }
+
+table {
+  font-family: Helvetica, Arial, san-serif;
+  font-weight: 100;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #F54997;
+  color: #ffffff;
+  font-weight: 100;
+}
+
+th {
+  font-weight: 100;
+  padding: 5px;
+}
+
+td {
+  border-bottom: 1px solid #F54997;
+  font-weight: 100;
+  padding: 5px;
+  vertical-align: top;
+}
