@@ -27,23 +27,23 @@ View.renderers[".stencil"] = StencilRenderer()
 
 let app = Application()
 
-func parseResponse(data: NSData?, error: NSError?) -> NSDictionary {
+func parseResponse(data: NSData?, error: NSError?) -> Dictionary<String, AnyObject> {
     guard let responseData = data else {
         print("Error: did not receive data")
-        return NSDictionary()
+        return Dictionary<String, AnyObject>()
     }
     guard error == nil else {
         print("error calling GET on /posts/1")
         print(error)
-        return NSDictionary()
+        return Dictionary<String, AnyObject>()
     }
     // parse the result as JSON, since that's what the API provides
     do {
         return try NSJSONSerialization.JSONObjectWithData(responseData,
-                                                             options: []) as! NSDictionary
+                                                             options: []) as! Dictionary<String, AnyObject>
     } catch  {
         print("error trying to convert data to JSON")
-        return NSDictionary()
+        return Dictionary<String, AnyObject>()
     }
 }
 
@@ -53,8 +53,8 @@ struct Episode {
     var imageUrl : String
 }
 
-func topTen(iblData: NSDictionary) -> String {
-    let ge = iblData.objectForKey("group_episodes") as! NSDictionary?
+func topTen(iblData: Dictionary<String, AnyObject>) -> String {
+    let ge = iblData["group_episodes"] as! NSDictionary?
     
     if ge == nil {
         print("no group_episodes")
@@ -106,7 +106,7 @@ app.get("/") { request in
     
     let dataTask = session.dataTaskWithRequest(urlRequest)
     
-    var iblData : NSDictionary = NSDictionary()
+    var iblData : Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
     
     // Do nasty synchronous request because Vapor async handling is horrible
     //let semaphore: dispatch_semaphore_t = dispatch_semaphore_create(0)
