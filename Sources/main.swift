@@ -119,9 +119,9 @@ router.get("/") {
             
             do {
                 let context = Context(dictionary: ["episodes": mapped])
-                print("got context")
-                let template = try Template(named: "index.stencil")
-                print("loaded template")
+                
+                let template = try Template(path: "./Resources/index.stencil")
+                
                 let rendered = try template.render(context)
                 response.status(HttpStatusCode.OK).send(rendered)
             } catch let error as NSError {
