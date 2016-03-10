@@ -92,6 +92,8 @@ func topTen(iblData: Dictionary<String, AnyObject>) -> [Episode] {
 
 let router = Router()
 
+router.use("/static/*", middleware: StaticFileServer())
+
 router.get("/") {
     request, response, next in
 
