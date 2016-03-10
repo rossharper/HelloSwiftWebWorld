@@ -7,12 +7,11 @@
 //
 
 import Foundation
-//import Vapor
-//import VaporStencil
 
 import KituraRouter
 import KituraNet
 import KituraSys
+import Stencil
 
 print("HelloSwiftWebWorld -- starting...")
 
@@ -26,10 +25,6 @@ for arg in Process.arguments {
         }
     }
 }
-
-//View.renderers[".stencil"] = StencilRenderer()
-
-//let app = Application()
 
 func parseResponse(data: NSData?, error: NSError?) -> Dictionary<String, AnyObject> {
     guard let responseData = data else {
@@ -57,19 +52,19 @@ struct Episode {
     var imageUrl : String
 }
 
-func topTen(iblData: Dictionary<String, AnyObject>) -> String {
+func topTen(iblData: Dictionary<String, AnyObject>) -> [Episode] {
     let ge = iblData["group_episodes"] as! NSDictionary?
 
     if ge == nil {
         print("no group_episodes")
-        return ""
+        return []
     }
 
     let episodeDictArray = ge!.objectForKey(NSString(string: "elements")) as! NSArray?
 
     if episodeDictArray == nil {
         print("no elements")
-        return ""
+        return []
     }
 
     let allEpisodes : [Episode] = episodeDictArray!.map{ (value) -> Episode in
@@ -87,28 +82,13 @@ func topTen(iblData: Dictionary<String, AnyObject>) -> String {
             !$0.title.lowercaseString.hasPrefix("eastenders")
         }
 
+    // TODO: better way to sub array?
     while noEastEnders.count > 10 {
         noEastEnders.removeLast()
     }
-
-    let tablerows : String = noEastEnders.map { (value) -> String in
-            return "<tr><td><img src=\"" + value.imageUrl + "\"/></td><td>" + value.title + "<br/>" + value.subtitle + "</td></tr>"
-        }.reduce("", combine:{$0 + $1})
-
-    // constructing a string because the fucking templating framework doesnt work
-    return "<table><thead><tr><th colspan=\"2\">iPlayer Top 10 Episodes that aren't EastEnders</th></tr></thead><tbody>" + tablerows + "</tbody></table>"
+    
+    return noEastEnders
 }
-
-//func htmlHeader() -> String {
-//    return "<html>
-//    <head>
-//    <link rel="stylesheet" type="text/css" href="home.css">
-//    </head>
-//    </head>
-//    <body>
-//    <h1>Hello Swift Web World</h1>
-//    <p>Hello, I am a web server written in <a href="https://swift.org/" target="_blank">Swift</a>, running on a Linux virtual machine in the cloud.</p>"
-//}
 
 let router = Router()
 
@@ -117,7 +97,7 @@ router.get("/") {
 
     guard let url = NSURL(string: "http://ibl.api.bbci.co.uk/ibl/v1/groups/popular/episodes?per_page=40") else {
             print("Error: cannot create URL")
-            response.status(500).send("ERROR!")
+            response.status(500).send("ERROR creating url!")
             return
         }
 
@@ -132,7 +112,22 @@ router.get("/") {
         let task = session.dataTaskWithRequest(urlRequest, completionHandler: { (data, iblResponse, error) in
             iblData = parseResponse(data, error: error)
 
-            response.status(HttpStatusCode.OK).send(topTen(iblData))
+            let topTenData = topTen(iblData)
+            let mapped : [Dictionary<String, String>] = topTenData.map{ (value) -> Dictionary<String, String> in
+                return ["imageUrl": value.imageUrl, "title": value.title, "subtitle": value.subtitle]
+            }
+            
+            do {
+                let context = Context(dictionary: ["episodes": mapped])
+                print("got context")
+                let template = try Template(named: "index.stencil")
+                print("loaded template")
+                let rendered = try template.render(context)
+                response.status(HttpStatusCode.OK).send(rendered)
+            } catch let error as NSError {
+                response.status(500).send("ERROR rendering template! \(error.code)")
+            }
+            
             next()
         })
         task.resume()
